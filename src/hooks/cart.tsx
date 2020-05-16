@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import { Product } from 'src/pages/Dashboard/styles';
 
 interface Product {
   id: string;
@@ -31,10 +30,12 @@ const CartProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadProducts(): Promise<void> {
-      const productsFromAsyncStorage = (await AsyncStorage.getItem(
+      // await AsyncStorage.removeItem('@desafio8/products');
+      const productsFromAsyncStorage = await AsyncStorage.getItem(
         '@desafio8/products',
-      )) as string;
-      setProducts(JSON.parse(productsFromAsyncStorage));
+      );
+      productsFromAsyncStorage &&
+        setProducts(JSON.parse(productsFromAsyncStorage));
     }
 
     loadProducts();
@@ -52,9 +53,28 @@ const CartProvider: React.FC = ({ children }) => {
   }, [products]);
 
   const addToCart = useCallback(
-    (product: Product) => {
+    ({ id, title, image_url, price }: Product) => {
       // TODO ADD A NEW ITEM TO THE CART
-      setProducts([...products, product]);
+      const productToAddToCart: Product = {
+        id,
+        title,
+        image_url,
+        price,
+        quantity: 1,
+      };
+
+      const productIndexToChange = products.findIndex(product => {
+        return product.id === id;
+      });
+
+      if (productIndexToChange > -1) {
+        const newQuantity = products[productIndexToChange].quantity + 1;
+        products[productIndexToChange].quantity = newQuantity;
+
+        setProducts([...products]);
+      } else {
+        setProducts([...products, productToAddToCart]);
+      }
     },
     [products],
   );
@@ -66,14 +86,10 @@ const CartProvider: React.FC = ({ children }) => {
         return product.id === id;
       });
 
-      const productToChange = products[productIndexToChange];
+      const newQuantity = products[productIndexToChange].quantity + 1;
+      products[productIndexToChange].quantity = newQuantity;
 
-      if (productIndexToChange) {
-        products[productIndexToChange] = {
-          ...productToChange,
-          quantity: productToChange.quantity + 1,
-        };
-      }
+      setProducts([...products]);
     },
     [products],
   );
@@ -85,14 +101,12 @@ const CartProvider: React.FC = ({ children }) => {
         return product.id === id;
       });
 
-      const productToChange = products[productIndexToChange];
+      const newQuantity = products[productIndexToChange].quantity - 1;
+      newQuantity === 0
+        ? products.splice(productIndexToChange, 1)
+        : (products[productIndexToChange].quantity = newQuantity);
 
-      if (productIndexToChange && productToChange.quantity >= 0) {
-        products[productIndexToChange] = {
-          ...productToChange,
-          quantity: productToChange.quantity - 1,
-        };
-      }
+      setProducts([...products]);
     },
     [products],
   );
