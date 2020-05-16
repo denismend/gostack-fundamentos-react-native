@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import { Product } from 'src/pages/Dashboard/styles';
 
 interface Product {
   id: string;
@@ -30,23 +31,71 @@ const CartProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadProducts(): Promise<void> {
-      // TODO LOAD ITEMS FROM ASYNC STORAGE
+      const productsFromAsyncStorage = (await AsyncStorage.getItem(
+        '@desafio8/products',
+      )) as string;
+      setProducts(JSON.parse(productsFromAsyncStorage));
     }
 
     loadProducts();
   }, []);
 
-  const addToCart = useCallback(async product => {
-    // TODO ADD A NEW ITEM TO THE CART
-  }, []);
+  useEffect(() => {
+    async function saveProductsToStorage(): Promise<void> {
+      await AsyncStorage.setItem(
+        '@desafio8/products',
+        JSON.stringify(products),
+      );
+    }
 
-  const increment = useCallback(async id => {
-    // TODO INCREMENTS A PRODUCT QUANTITY IN THE CART
-  }, []);
+    saveProductsToStorage();
+  }, [products]);
 
-  const decrement = useCallback(async id => {
-    // TODO DECREMENTS A PRODUCT QUANTITY IN THE CART
-  }, []);
+  const addToCart = useCallback(
+    (product: Product) => {
+      // TODO ADD A NEW ITEM TO THE CART
+      setProducts([...products, product]);
+    },
+    [products],
+  );
+
+  const increment = useCallback(
+    id => {
+      // TODO INCREMENTS A PRODUCT QUANTITY IN THE CART
+      const productIndexToChange = products.findIndex(product => {
+        return product.id === id;
+      });
+
+      const productToChange = products[productIndexToChange];
+
+      if (productIndexToChange) {
+        products[productIndexToChange] = {
+          ...productToChange,
+          quantity: productToChange.quantity + 1,
+        };
+      }
+    },
+    [products],
+  );
+
+  const decrement = useCallback(
+    id => {
+      // TODO DECREMENTS A PRODUCT QUANTITY IN THE CART
+      const productIndexToChange = products.findIndex(product => {
+        return product.id === id;
+      });
+
+      const productToChange = products[productIndexToChange];
+
+      if (productIndexToChange && productToChange.quantity >= 0) {
+        products[productIndexToChange] = {
+          ...productToChange,
+          quantity: productToChange.quantity - 1,
+        };
+      }
+    },
+    [products],
+  );
 
   const value = React.useMemo(
     () => ({ addToCart, increment, decrement, products }),
