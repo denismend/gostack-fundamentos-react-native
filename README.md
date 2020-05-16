@@ -26,6 +26,8 @@
   <a href="#memo-licença">Licença</a>
 </p>
 
+![Project GoMarketplace demo](src/assets/project.gif)
+
 ## :rocket: Sobre o desafio
 
 Nesse desafio, desenvolverá uma nova aplicação, a GoMarketplace. Dessa vez é hora de você praticar o que você aprendeu até agora no React Native, junto com TypeScript, utilizando rotas, Async Storage e a Context API.
@@ -39,6 +41,17 @@ O template está disponível na seguinte url: **[Acessar Template](https://githu
 **Dica**: Caso não saiba utilizar repositórios do Github como template, temos um guia em **[nosso FAQ](https://github.com/Rocketseat/bootcamp-gostack-desafios/tree/master/faq-desafios).**
 
 Agora navegue até a pasta criada e abra no Visual Studio Code, lembre-se de executar o comando `yarn` no seu terminal para instalar todas as dependências.
+
+### Como Executar
+
+1. Faça o clone do projeto na sua máquina;
+2. Na raiz do projeto, execute o comando `yarn` para baixar as dependências;
+3. Execute `yarn test` para rodar os testes;
+4. Abra o emulador ou dispositivo.
+5. Execute `yarn android` compilar o projeto para dispositivo ou emulador Android ou;
+6. Execute `yarn ios` compilar o projeto para dispositivo ou emulador IOS;
+7. Execute `yarn json-server server.json -p 3333` para executar a Fake api de dados;
+8. Execute `yarn start` para executar o projeto quando já compilado;
 
 ### Utilizando uma fake API
 
