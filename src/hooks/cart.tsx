@@ -41,7 +41,7 @@ const CartProvider: React.FC = ({ children }) => {
     loadProducts();
   }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     async function saveProductsToStorage(): Promise<void> {
       await AsyncStorage.setItem(
         '@desafio8/products',
@@ -50,10 +50,10 @@ const CartProvider: React.FC = ({ children }) => {
     }
 
     saveProductsToStorage();
-  }, [products]);
+  }, [products]); */
 
   const addToCart = useCallback(
-    ({ id, title, image_url, price }: Product) => {
+    async ({ id, title, image_url, price }: Product) => {
       // TODO ADD A NEW ITEM TO THE CART
       const productToAddToCart: Product = {
         id,
@@ -75,12 +75,17 @@ const CartProvider: React.FC = ({ children }) => {
       } else {
         setProducts([...products, productToAddToCart]);
       }
+
+      await AsyncStorage.setItem(
+        '@desafio8/products',
+        JSON.stringify(products),
+      );
     },
     [products],
   );
 
   const increment = useCallback(
-    id => {
+    async id => {
       // TODO INCREMENTS A PRODUCT QUANTITY IN THE CART
       const productIndexToChange = products.findIndex(product => {
         return product.id === id;
@@ -90,23 +95,35 @@ const CartProvider: React.FC = ({ children }) => {
       products[productIndexToChange].quantity = newQuantity;
 
       setProducts([...products]);
+
+      await AsyncStorage.setItem(
+        '@desafio8/products',
+        JSON.stringify(products),
+      );
     },
     [products],
   );
 
   const decrement = useCallback(
-    id => {
+    async id => {
       // TODO DECREMENTS A PRODUCT QUANTITY IN THE CART
+      const newProducts = [...products];
+
       const productIndexToChange = products.findIndex(product => {
         return product.id === id;
       });
 
-      const newQuantity = products[productIndexToChange].quantity - 1;
+      const newQuantity = newProducts[productIndexToChange].quantity - 1;
       newQuantity === 0
-        ? products.splice(productIndexToChange, 1)
-        : (products[productIndexToChange].quantity = newQuantity);
+        ? newProducts.splice(productIndexToChange, 1)
+        : (newProducts[productIndexToChange].quantity = newQuantity);
 
-      setProducts([...products]);
+      setProducts([...newProducts]);
+
+      await AsyncStorage.setItem(
+        '@desafio8/products',
+        JSON.stringify(products),
+      );
     },
     [products],
   );
