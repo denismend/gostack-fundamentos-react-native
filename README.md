@@ -26,7 +26,9 @@
   <a href="#memo-licença">Licença</a>
 </p>
 
-![Project GoMarketplace demo](src/assets/project.gif)
+<p align="center">
+  <img src="src/assets/project.gif">
+</p>
 
 ## :rocket: Sobre o desafio
 
